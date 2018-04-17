@@ -71,6 +71,34 @@ const LArTPC &GeometryManager::GetLArTPC() const
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
+double GeometryManager::GetSigmaUVW() const
+{
+    if (m_larTPCMap.empty())
+    {
+        std::cout << "GeometryManager::GetSigmaUVW - LArTPC description not registered with Pandora as required " << std::endl;
+        throw StatusCodeException(STATUS_CODE_NOT_INITIALIZED);
+    }
+
+    const LArTPC *const pFirstLArTPC(m_larTPCMap.begin()->second);
+    const double sigmaUVW(pFirstLArTPC->GetSigmaUVW());
+    const double maxSigmaDiscrepancy(0.01);
+
+    for (const LArTPCMap::value_type &mapEntry : m_larTPCMap)
+    {
+        const LArTPC *const pLArTPC(mapEntry.second);
+
+        if (std::fabs(sigmaUVW - pLArTPC->GetSigmaUVW()) > maxSigmaDiscrepancy)
+        {
+            std::cout << "GeometryManager::GetSigmaUVW - Plugin does not support provided LArTPC configurations " << std::endl;
+            throw StatusCodeException(STATUS_CODE_INVALID_PARAMETER);
+        }
+    }
+
+    return sigmaUVW;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------
+
 Granularity GeometryManager::GetHitTypeGranularity(const HitType hitType) const
 {
     HitTypeToGranularityMap::const_iterator iter = m_hitTypeToGranularityMap.find(hitType);

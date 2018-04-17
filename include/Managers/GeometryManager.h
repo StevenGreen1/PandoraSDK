@@ -66,6 +66,14 @@ public:
     const LArTPC &GetLArTPC() const;
 
     /**
+     *  @brief  Return the sigmaUVW value for the first lar tpc registered given it is consistent with 
+     *          the sigmaUVW values for all other registered lar tpcs
+     *
+     *  @return sigmaUVW 
+     */
+    double GetSigmaUVW() const;
+
+    /**
      *  @brief  Get the map from name to lar tpc parameters
      * 
      *  @return the map from name to lar tpc paramters
